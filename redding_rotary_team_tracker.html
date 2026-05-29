@@ -1,213 +1,111 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Redding Rotary — Team Tracker 26/27</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.10.0/dist/tabler-icons.min.css" />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #0d1117;
-      color: #e6edf3;
-      min-height: 100vh;
-      padding: 2rem 1rem;
-    }
+<h2 class="sr-only">Redding Rotary Launch Into Service 26/27 — split layout with scoring on left and roster on right</h2>
 
-    .container { max-width: 960px; margin: 0 auto; }
+<style>
+  * { box-sizing: border-box; }
+  .wrap {
+    font-family: var(--font-sans);
+    background: #07091a;
+    border-radius: var(--border-radius-lg);
+    padding: 1.25rem;
+    position: relative;
+    overflow: hidden;
+    min-height: 600px;
+  }
+  .starfield { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+  .star { position: absolute; border-radius: 50%; background: #fff; animation: twinkle 3s infinite alternate; }
+  @keyframes twinkle { from { opacity: 0.15; } to { opacity: 0.9; } }
 
-    .hero {
-      background: linear-gradient(135deg, #0a0e2a 0%, #111a3e 60%, #1a0a0a 100%);
-      border-radius: 14px;
-      padding: 2rem;
-      margin-bottom: 1.5rem;
-      position: relative;
-      overflow: hidden;
-      border: 1px solid rgba(186,117,23,0.2);
-    }
-    .hero::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse at 70% 30%, rgba(186,117,23,0.15) 0%, transparent 60%),
-                  radial-gradient(ellipse at 20% 80%, rgba(153,28,28,0.15) 0%, transparent 50%);
-      pointer-events: none;
-    }
-    .stars { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
-    .star {
-      position: absolute; border-radius: 50%; background: #fff;
-      animation: twinkle 3s infinite alternate;
-    }
-    @keyframes twinkle { from { opacity: 0.2; } to { opacity: 0.85; } }
+  .hero {
+    position: relative; z-index: 1;
+    background: linear-gradient(135deg, rgba(10,14,42,0.92) 0%, rgba(17,26,62,0.92) 60%, rgba(26,10,10,0.92) 100%);
+    border-radius: var(--border-radius-lg);
+    padding: 1.1rem 1.25rem;
+    margin-bottom: 1rem;
+    border: 0.5px solid rgba(186,117,23,0.25);
+  }
+  .org-label { font-size: 11px; font-weight: 500; letter-spacing: 0.13em; color: #c9923a; text-transform: uppercase; margin: 0 0 3px; }
+  .hero-title { font-size: 20px; font-weight: 500; color: #f5e6c8; margin: 0 0 2px; }
+  .hero-sub { font-size: 13px; color: #8a9bb8; margin: 0; }
+  .gear-icon { font-size: 26px; color: #d4a037; position: absolute; right: 1rem; top: 1rem; opacity: 0.8; animation: spin 18s linear infinite; }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-    .hero-inner { position: relative; z-index: 1; }
-    .org-label {
-      font-size: 12px; font-weight: 600; letter-spacing: 0.14em;
-      color: #c9923a; text-transform: uppercase; margin-bottom: 6px;
-    }
-    .hero-title { font-size: 28px; font-weight: 600; color: #f5e6c8; margin-bottom: 4px; }
-    .hero-sub { font-size: 15px; color: #8a9bb8; }
-    .gear-icon {
-      font-size: 36px; color: #d4a037; position: absolute;
-      right: 1.5rem; top: 1.5rem; opacity: 0.8;
-      animation: spin 18s linear infinite;
-    }
-    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  .controls-row { position: relative; z-index: 1; display: flex; align-items: center; justify-content: flex-end; margin-bottom: 1rem; gap: 10px; }
+  .edit-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; padding: 3px 10px; border-radius: var(--border-radius-md); background: rgba(186,117,23,0.15); color: #c9923a; font-weight: 500; border: 0.5px solid rgba(186,117,23,0.35); }
+  .lock-btn { display: flex; align-items: center; gap: 6px; padding: 6px 14px; border: 0.5px solid rgba(255,255,255,0.15); border-radius: var(--border-radius-md); background: rgba(255,255,255,0.05); cursor: pointer; font-size: 13px; color: #8a9bb8; }
+  .lock-btn:hover { background: rgba(255,255,255,0.1); color: #e6edf3; }
 
-    .controls-row {
-      display: flex; align-items: center; justify-content: space-between;
-      flex-wrap: wrap; gap: 12px; margin-bottom: 1.25rem;
-    }
-    .edit-badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      font-size: 13px; padding: 5px 14px; border-radius: 8px;
-      background: rgba(186,117,23,0.15); color: #c9923a;
-      font-weight: 600; border: 1px solid rgba(186,117,23,0.35);
-    }
-    .lock-btn {
-      display: flex; align-items: center; gap: 7px;
-      padding: 8px 18px; border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 8px; background: rgba(255,255,255,0.05);
-      cursor: pointer; font-size: 14px; color: #8a9bb8;
-      transition: background 0.15s, border-color 0.15s;
-    }
-    .lock-btn:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.25); color: #e6edf3; }
+  .split { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; }
 
-    .modal-overlay {
-      display: none; position: fixed; inset: 0;
-      background: rgba(0,0,0,0.6); z-index: 100;
-      align-items: center; justify-content: center;
-    }
-    .modal-box {
-      background: #161b22; border: 1px solid rgba(186,117,23,0.3);
-      border-radius: 14px; padding: 2rem; width: 320px;
-    }
-    .modal-title { font-size: 17px; font-weight: 600; margin-bottom: 16px; color: #f5e6c8; }
-    .modal-box input[type=password] {
-      width: 100%; padding: 10px 12px; margin-bottom: 12px;
-      background: #0d1117; border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 8px; color: #e6edf3; font-size: 15px;
-    }
-    .modal-box input[type=password]:focus { outline: none; border-color: #c9923a; }
-    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
-    .btn-primary {
-      padding: 8px 20px; border-radius: 8px;
-      border: 1px solid #c9923a; background: rgba(186,117,23,0.15);
-      cursor: pointer; font-size: 14px; color: #f0c060; font-weight: 600;
-    }
-    .btn-primary:hover { background: rgba(186,117,23,0.28); }
-    .btn-cancel {
-      padding: 8px 16px; border-radius: 8px;
-      border: 1px solid rgba(255,255,255,0.15);
-      background: transparent; cursor: pointer; font-size: 14px; color: #8a9bb8;
-    }
-    .btn-cancel:hover { background: rgba(255,255,255,0.07); }
-    .error-msg { font-size: 13px; color: #f97583; margin-bottom: 10px; }
+  .panel { background: rgba(10,14,34,0.82); border: 0.5px solid rgba(255,255,255,0.08); border-radius: var(--border-radius-lg); overflow: hidden; }
+  .panel-header { background: #0f1535; padding: 8px 12px; border-bottom: 0.5px solid rgba(138,155,184,0.15); }
+  .panel-header p { font-size: 11px; font-weight: 500; color: #c9923a; text-transform: uppercase; letter-spacing: .1em; margin: 0; }
 
-    .table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); }
-    table { width: 100%; border-collapse: collapse; font-size: 14px; table-layout: fixed; }
-    col.label-col { width: 210px; }
-    col.team-col { width: 110px; }
-    thead tr { background: #0f1535; }
-    th {
-      font-size: 12px; font-weight: 600; color: #8a9bb8;
-      padding: 12px 10px; text-align: center;
-      border-bottom: 1px solid rgba(138,155,184,0.15);
-      letter-spacing: 0.07em; white-space: nowrap;
-    }
-    th.label-th { text-align: left; color: #c9923a; padding-left: 16px; }
-    td {
-      padding: 10px 10px; border-bottom: 1px solid rgba(255,255,255,0.06);
-      text-align: center; color: #e6edf3; vertical-align: middle;
-    }
-    td.label-td { text-align: left; font-size: 14px; color: #8a9bb8; padding-left: 16px; }
-    tr:hover td { background: rgba(255,255,255,0.02); }
-    tr.total-row td {
-      font-weight: 600; background: rgba(186,117,23,0.1); color: #f0c060;
-      border-top: 1px solid rgba(186,117,23,0.3);
-      border-bottom: 1px solid rgba(186,117,23,0.3); font-size: 15px;
-    }
-    tr.total-row td.label-td { color: #f0c060; }
-    tr.names-hdr td {
-      font-size: 11px; color: #555d6b; padding-top: 18px;
-      border-bottom: none; text-transform: uppercase; letter-spacing: .1em;
-    }
-    tr.commander-row td { background: rgba(186,117,23,0.07); border-bottom: 1px solid rgba(186,117,23,0.15); }
-    tr.commander-row td.label-td { color: #c9923a; font-weight: 600; }
-    tr.commander-divider td { border-bottom: 1px solid rgba(186,117,23,0.2); padding: 0; height: 1px; }
-    tr:last-child td { border-bottom: none; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { font-size: 11px; font-weight: 500; color: #8a9bb8; padding: 8px 8px; text-align: center; border-bottom: 0.5px solid rgba(138,155,184,0.15); letter-spacing: .05em; white-space: nowrap; }
+  th.lth { text-align: left; color: #c9923a; padding-left: 12px; }
+  td { padding: 7px 8px; border-bottom: 0.5px solid rgba(255,255,255,0.05); text-align: center; color: #e6edf3; vertical-align: middle; font-size: 13px; }
+  td.ltd { text-align: left; color: #8a9bb8; padding-left: 12px; font-size: 12px; }
+  tr:last-child td { border-bottom: none; }
+  tr.tot td { font-weight: 500; background: rgba(186,117,23,0.1); color: #f0c060; border-top: 0.5px solid rgba(186,117,23,0.25); border-bottom: 0.5px solid rgba(186,117,23,0.25); }
+  tr.tot td.ltd { color: #f0c060; }
+  tr.cmd-row td { background: rgba(186,117,23,0.07); border-bottom: 0.5px solid rgba(186,117,23,0.15); }
+  tr.cmd-row td.ltd { color: #c9923a; font-weight: 500; }
+  tr.cmd-div td { border-bottom: 0.5px solid rgba(186,117,23,0.2); padding: 0; }
+  tr.mate-row td.ltd { color: #555d6b; font-size: 12px; }
+  tr.names-hdr td { font-size: 10px; color: #3a4252; padding-top: 12px; border-bottom: none; text-transform: uppercase; letter-spacing: .1em; }
 
-    input.score-input {
-      width: 64px; padding: 6px 7px; text-align: center;
-      border-radius: 7px; border: 1px solid rgba(255,255,255,0.15);
-      background: rgba(255,255,255,0.06); color: #e6edf3;
-      font-size: 14px; font-family: inherit;
-    }
-    input.score-input:focus { outline: none; border-color: #c9923a; background: rgba(186,117,23,0.08); }
-    input.name-input {
-      width: 82px; padding: 6px 7px; border-radius: 7px;
-      border: 1px solid rgba(255,255,255,0.15);
-      background: rgba(255,255,255,0.06); color: #e6edf3;
-      font-size: 13px; font-family: inherit;
-    }
-    input.name-input:focus { outline: none; border-color: #c9923a; }
-    input.commander-input {
-      width: 82px; padding: 6px 7px; border-radius: 7px;
-      border: 1px solid rgba(186,117,23,0.35);
-      background: rgba(186,117,23,0.07); color: #e6edf3;
-      font-size: 13px; font-family: inherit;
-    }
-    input.commander-input:focus { outline: none; border-color: #c9923a; }
+  input.score-input { width: 52px; padding: 4px 5px; text-align: center; border-radius: 6px; border: 0.5px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); color: #e6edf3; font-size: 12px; font-family: var(--font-sans); }
+  input.score-input:focus { outline: none; border-color: #c9923a; }
+  input.name-input { width: 100%; padding: 4px 6px; border-radius: 6px; border: 0.5px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); color: #e6edf3; font-size: 12px; font-family: var(--font-sans); }
+  input.name-input:focus { outline: none; border-color: #c9923a; }
+  input.cmd-input { width: 100%; padding: 4px 6px; border-radius: 6px; border: 0.5px solid rgba(186,117,23,0.35); background: rgba(186,117,23,0.07); color: #e6edf3; font-size: 12px; font-family: var(--font-sans); }
+  input.cmd-input:focus { outline: none; border-color: #c9923a; }
 
-    .score-val { min-width: 32px; display: inline-block; }
-    .name-val { font-size: 13px; color: #555d6b; }
-    .commander-val { font-size: 13px; color: #a07830; }
+  .name-val { font-size: 12px; color: #555d6b; }
+  .cmd-val { font-size: 12px; color: #a07830; }
 
-    .dl-row { display: flex; justify-content: flex-end; margin-top: 1.25rem; }
-    .dl-btn {
-      display: flex; align-items: center; gap: 7px;
-      padding: 8px 18px; border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 8px; background: rgba(255,255,255,0.05);
-      cursor: pointer; font-size: 13px; color: #8a9bb8;
-    }
-    .dl-btn:hover { background: rgba(255,255,255,0.1); color: #e6edf3; }
+  .roster-table td { padding: 5px 8px; }
+  .roster-table td.ltd { padding-left: 12px; }
+  .team-badge { display: inline-block; font-size: 10px; font-weight: 500; padding: 1px 7px; border-radius: 10px; background: rgba(186,117,23,0.12); color: #c9923a; border: 0.5px solid rgba(186,117,23,0.25); white-space: nowrap; }
 
-    footer {
-      text-align: center; margin-top: 2.5rem;
-      font-size: 12px; color: #3a4252; letter-spacing: 0.05em;
-    }
-  </style>
-</head>
-<body>
-<div class="container">
+  .dl-row { position: relative; z-index: 1; display: flex; justify-content: flex-end; margin-top: 1rem; }
+  .dl-btn { display: flex; align-items: center; gap: 5px; padding: 6px 14px; border: 0.5px solid rgba(255,255,255,0.15); border-radius: var(--border-radius-md); background: rgba(255,255,255,0.05); cursor: pointer; font-size: 12px; color: #8a9bb8; }
+  .dl-btn:hover { background: rgba(255,255,255,0.1); color: #e6edf3; }
+
+  .modal-overlay { display: none; position: absolute; inset: 0; background: rgba(0,0,0,0.6); border-radius: var(--border-radius-lg); z-index: 50; align-items: center; justify-content: center; min-height: 300px; }
+  .modal-box { background: #161b22; border: 0.5px solid rgba(186,117,23,0.3); border-radius: var(--border-radius-lg); padding: 1.5rem; width: 290px; }
+  .modal-title { font-size: 15px; font-weight: 500; margin: 0 0 12px; color: #f5e6c8; }
+  .modal-box input[type=password] { width: 100%; padding: 9px 12px; margin-bottom: 10px; background: #0d1117; border: 0.5px solid rgba(255,255,255,0.15); border-radius: 8px; color: #e6edf3; font-size: 14px; }
+  .modal-box input[type=password]:focus { outline: none; border-color: #c9923a; }
+  .modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
+  .btn-primary { padding: 7px 18px; border-radius: 8px; border: 0.5px solid #c9923a; background: rgba(186,117,23,0.15); cursor: pointer; font-size: 13px; color: #f0c060; font-weight: 500; }
+  .btn-primary:hover { background: rgba(186,117,23,0.25); }
+  .btn-cancel { padding: 7px 14px; border-radius: 8px; border: 0.5px solid rgba(255,255,255,0.15); background: transparent; cursor: pointer; font-size: 13px; color: #8a9bb8; }
+  .error-msg { font-size: 12px; color: #f97583; margin: 0 0 8px; }
+</style>
+
+<div class="wrap" id="app">
+  <div class="starfield" id="starfield"></div>
 
   <div class="hero">
-    <div class="stars" id="stars-container"></div>
     <i class="ti ti-settings gear-icon" aria-hidden="true"></i>
-    <div class="hero-inner">
-      <p class="org-label">Redding Rotary Club</p>
-      <h1 class="hero-title">🚀 Launch Into Service 26/27</h1>
-      <p class="hero-sub">Team Competition Tracker</p>
-    </div>
+    <p class="org-label">Redding Rotary Club</p>
+    <h1 class="hero-title">🚀 Launch Into Service 26/27</h1>
+    <p class="hero-sub">Team Competition Tracker</p>
   </div>
 
   <div class="controls-row">
-    <span id="edit-badge" class="edit-badge" style="display:none;">
-      <i class="ti ti-pencil" style="font-size:14px" aria-hidden="true"></i> editing mode
-    </span>
-    <div style="margin-left:auto;">
-      <button class="lock-btn" id="lock-btn" onclick="handleLock()">
-        <i class="ti ti-lock" id="lock-icon"></i>
-        <span id="lock-label">unlock to edit</span>
-      </button>
-    </div>
+    <span id="edit-badge" class="edit-badge" style="display:none;"><i class="ti ti-pencil" style="font-size:13px" aria-hidden="true"></i> editing mode</span>
+    <button class="lock-btn" onclick="handleLock()">
+      <i class="ti ti-lock" id="lock-icon"></i>
+      <span id="lock-label">unlock to edit</span>
+    </button>
   </div>
 
   <div class="modal-overlay" id="modal">
     <div class="modal-box">
-      <p class="modal-title"><i class="ti ti-lock" style="font-size:16px;vertical-align:-2px;margin-right:8px" aria-hidden="true"></i>Enter password to edit</p>
+      <p class="modal-title"><i class="ti ti-lock" style="font-size:15px;vertical-align:-2px;margin-right:7px" aria-hidden="true"></i>Enter password to edit</p>
       <p class="error-msg" id="pw-error" style="display:none;">Incorrect password. Try again.</p>
       <input type="password" id="pw-input" placeholder="Password" onkeydown="if(event.key==='Enter')submitPw()" />
       <div class="modal-actions">
@@ -217,182 +115,183 @@
     </div>
   </div>
 
-  <div class="table-wrap">
-    <table>
-      <colgroup>
-        <col class="label-col">
-        <col class="team-col"><col class="team-col"><col class="team-col">
-        <col class="team-col"><col class="team-col"><col class="team-col">
-      </colgroup>
-      <thead>
-        <tr>
-          <th class="label-th">Team Goals</th>
-          <th>Team 1</th><th>Team 2</th><th>Team 3</th>
-          <th>Team 4</th><th>Team 5</th><th>Team 6</th>
-        </tr>
-      </thead>
-      <tbody id="tbody"></tbody>
-    </table>
+  <div class="split">
+    <div class="panel" id="scores-panel">
+      <div class="panel-header"><p><i class="ti ti-trophy" style="font-size:12px;margin-right:5px" aria-hidden="true"></i>Scores</p></div>
+      <table id="scores-table">
+        <thead>
+          <tr>
+            <th class="lth">Goal</th>
+            <th>T1</th><th>T2</th><th>T3</th><th>T4</th><th>T5</th><th>T6</th>
+          </tr>
+        </thead>
+        <tbody id="scores-body"></tbody>
+      </table>
+    </div>
+
+    <div class="panel" id="roster-panel">
+      <div class="panel-header"><p><i class="ti ti-users" style="font-size:12px;margin-right:5px" aria-hidden="true"></i>⚔️ Crew Roster</p></div>
+      <table class="roster-table">
+        <thead>
+          <tr>
+            <th class="lth">Role</th>
+            <th>T1</th><th>T2</th><th>T3</th><th>T4</th><th>T5</th><th>T6</th>
+          </tr>
+        </thead>
+        <tbody id="roster-body"></tbody>
+      </table>
+    </div>
   </div>
 
   <div class="dl-row" id="dl-row" style="display:none;">
-    <button class="dl-btn" onclick="downloadCSV()">
-      <i class="ti ti-download" style="font-size:15px" aria-hidden="true"></i> download CSV
-    </button>
+    <button class="dl-btn" onclick="downloadCSV()"><i class="ti ti-download" style="font-size:14px" aria-hidden="true"></i> download CSV</button>
   </div>
-
-  <footer>Redding Rotary Club &mdash; Launch Into Service 26/27</footer>
-
 </div>
 
 <script>
-  const PASS = 'rotary2026';
-  const NT = 6, NN = 18;
-  let isEditor = false;
+const PASS = 'rotary2026';
+const NT = 6, NN = 18;
+let isEditor = false;
 
-  const scoreRows = [
-    { key:'social1',    label:'First Team Social' },
-    { key:'social2',    label:'Team Social w/another Team' },
-    { key:'extra',      label:"Extra Points for add'l social" },
-    { key:'recruit1',   label:'Recruit Teammate' },
-    { key:'recruit2',   label:'Recruit Teammate' },
-    { key:'addl',       label:"Add'l Teammates Recruited" },
-    { key:'fundraiser', label:'Fundraiser for Committee' },
-    { key:'attendance', label:'Team Attendance %' },
-    { key:'spirit',     label:'Team Spirit %' },
-    { key:'committees', label:'% of Team on committees' },
-  ];
+const scoreRows = [
+  { key:'social1',    label:'First Social' },
+  { key:'social2',    label:'Social w/Team' },
+  { key:'extra',      label:"Extra Social" },
+  { key:'recruit1',   label:'Recruit #1' },
+  { key:'recruit2',   label:'Recruit #2' },
+  { key:'addl',       label:"Add'l Recruits" },
+  { key:'fundraiser', label:'Fundraiser' },
+  { key:'attendance', label:'Attendance %' },
+  { key:'spirit',     label:'Spirit %' },
+  { key:'committees', label:'Committees %' },
+];
 
-  let scores = {};
-  let commanders = [Array(NT).fill(''), Array(NT).fill('')];
-  let names = {};
-  scoreRows.forEach(r => scores[r.key] = Array(NT).fill(0));
-  for(let n=0;n<NN;n++) names[n] = Array(NT).fill('');
+let scores = {};
+let commanders = [Array(NT).fill(''), Array(NT).fill('')];
+let names = {};
+scoreRows.forEach(r => scores[r.key] = Array(NT).fill(0));
+for(let n=0;n<NN;n++) names[n] = Array(NT).fill('');
 
-  function total(t){ return scoreRows.reduce((s,r)=>s+(parseFloat(scores[r.key][t])||0),0); }
-  function fmt(v){ return v%1===0?v:parseFloat(v).toFixed(1); }
+function total(t){ return scoreRows.reduce((s,r)=>s+(parseFloat(scores[r.key][t])||0),0); }
+function fmt(v){ return v%1===0?v:parseFloat(v).toFixed(1); }
 
-  function render(){
-    const tb = document.getElementById('tbody');
-    tb.innerHTML = '';
-
-    scoreRows.forEach(r=>{
-      const tr = document.createElement('tr');
-      let h = `<td class="label-td">${r.label}</td>`;
-      for(let t=0;t<NT;t++){
-        const v = scores[r.key][t];
-        h += isEditor
-          ? `<td><input class="score-input" type="number" min="0" step="0.5" value="${v}" onchange="setScore('${r.key}',${t},this.value)"/></td>`
-          : `<td><span class="score-val">${fmt(v)}</span></td>`;
-      }
-      tr.innerHTML = h; tb.appendChild(tr);
-    });
-
-    const tot = document.createElement('tr');
-    tot.className = 'total-row';
-    let th = `<td class="label-td">Total Score</td>`;
-    for(let t=0;t<NT;t++) th += `<td id="tot-${t}">${Math.round(total(t)*10)/10}</td>`;
-    tot.innerHTML = th; tb.appendChild(tot);
-
-    const rh = document.createElement('tr');
-    rh.className = 'names-hdr';
-    rh.innerHTML = `<td class="label-td">⚔️ Crew Roster</td><td colspan="6"></td>`;
-    tb.appendChild(rh);
-
-    for(let c=0;c<2;c++){
-      const cr = document.createElement('tr');
-      cr.className = 'commander-row';
-      let ch = `<td class="label-td"><i class="ti ti-crown" style="font-size:13px;margin-right:6px;color:#c9923a" aria-hidden="true"></i>Commander ${c+1}</td>`;
-      for(let t=0;t<NT;t++){
-        const nm = commanders[c][t];
-        ch += isEditor
-          ? `<td><input class="commander-input" type="text" placeholder="Name" value="${nm}" onchange="setCommander(${c},${t},this.value)"/></td>`
-          : `<td><span class="commander-val">${nm||'—'}</span></td>`;
-      }
-      cr.innerHTML = ch; tb.appendChild(cr);
+function renderScores(){
+  const tb = document.getElementById('scores-body');
+  tb.innerHTML = '';
+  scoreRows.forEach(r=>{
+    const tr = document.createElement('tr');
+    let h = `<td class="ltd">${r.label}</td>`;
+    for(let t=0;t<NT;t++){
+      const v = scores[r.key][t];
+      h += isEditor
+        ? `<td><input class="score-input" type="number" min="0" step="0.5" value="${v}" onchange="setScore('${r.key}',${t},this.value)"/></td>`
+        : `<td>${fmt(v)}</td>`;
     }
+    tr.innerHTML = h; tb.appendChild(tr);
+  });
+  const tot = document.createElement('tr');
+  tot.className = 'tot';
+  let th = `<td class="ltd">Total</td>`;
+  for(let t=0;t<NT;t++) th += `<td id="tot-${t}">${Math.round(total(t)*10)/10}</td>`;
+  tot.innerHTML = th; tb.appendChild(tot);
+}
 
-    const divRow = document.createElement('tr');
-    divRow.className = 'commander-divider';
-    divRow.innerHTML = `<td colspan="7"></td>`;
-    tb.appendChild(divRow);
-
-    for(let n=0;n<NN;n++){
-      const nr = document.createElement('tr');
-      let nh = `<td class="label-td" style="color:#555d6b;">Mate ${n+1}</td>`;
-      for(let t=0;t<NT;t++){
-        const nm = names[n][t];
-        nh += isEditor
-          ? `<td><input class="name-input" type="text" placeholder="Name" value="${nm}" onchange="setName(${n},${t},this.value)"/></td>`
-          : `<td><span class="name-val">${nm||'—'}</span></td>`;
-      }
-      nr.innerHTML = nh; tb.appendChild(nr);
+function renderRoster(){
+  const tb = document.getElementById('roster-body');
+  tb.innerHTML = '';
+  for(let c=0;c<2;c++){
+    const cr = document.createElement('tr');
+    cr.className = 'cmd-row';
+    let ch = `<td class="ltd"><i class="ti ti-crown" style="font-size:11px;margin-right:4px;color:#c9923a" aria-hidden="true"></i>Cmdr ${c+1}</td>`;
+    for(let t=0;t<NT;t++){
+      const nm = commanders[c][t];
+      ch += isEditor
+        ? `<td><input class="cmd-input" type="text" placeholder="Name" value="${nm}" onchange="setCommander(${c},${t},this.value)"/></td>`
+        : `<td><span class="cmd-val">${nm||'—'}</span></td>`;
     }
+    cr.innerHTML = ch; tb.appendChild(cr);
   }
-
-  function setScore(key,t,v){
-    scores[key][t] = parseFloat(v)||0;
-    const el = document.getElementById(`tot-${t}`);
-    if(el) el.textContent = Math.round(total(t)*10)/10;
-  }
-  function setCommander(c,t,v){ commanders[c][t]=v; }
-  function setName(n,t,v){ names[n][t]=v; }
-
-  function handleLock(){
-    if(isEditor){
-      isEditor=false;
-      document.getElementById('edit-badge').style.display='none';
-      document.getElementById('lock-icon').className='ti ti-lock';
-      document.getElementById('lock-label').textContent='unlock to edit';
-      document.getElementById('dl-row').style.display='none';
-      render();
-    } else {
-      const m=document.getElementById('modal');
-      m.style.display='flex';
-      document.getElementById('pw-error').style.display='none';
-      document.getElementById('pw-input').value='';
-      setTimeout(()=>document.getElementById('pw-input').focus(),80);
+  const div = document.createElement('tr');
+  div.className = 'cmd-div';
+  div.innerHTML = `<td colspan="7"></td>`;
+  tb.appendChild(div);
+  for(let n=0;n<NN;n++){
+    const nr = document.createElement('tr');
+    nr.className = 'mate-row';
+    let nh = `<td class="ltd">Mate ${n+1}</td>`;
+    for(let t=0;t<NT;t++){
+      const nm = names[n][t];
+      nh += isEditor
+        ? `<td><input class="name-input" type="text" placeholder="Name" value="${nm}" onchange="setName(${n},${t},this.value)"/></td>`
+        : `<td><span class="name-val">${nm||'—'}</span></td>`;
     }
+    nr.innerHTML = nh; tb.appendChild(nr);
   }
-  function closeModal(){ document.getElementById('modal').style.display='none'; }
-  function submitPw(){
-    if(document.getElementById('pw-input').value===PASS){
-      isEditor=true; closeModal();
-      document.getElementById('edit-badge').style.display='inline-flex';
-      document.getElementById('lock-icon').className='ti ti-lock-open';
-      document.getElementById('lock-label').textContent='lock editing';
-      document.getElementById('dl-row').style.display='flex';
-      render();
-    } else {
-      document.getElementById('pw-error').style.display='block';
-      document.getElementById('pw-input').value='';
-      document.getElementById('pw-input').focus();
-    }
+}
+
+function render(){ renderScores(); renderRoster(); }
+
+function setScore(key,t,v){
+  scores[key][t] = parseFloat(v)||0;
+  const el = document.getElementById(`tot-${t}`);
+  if(el) el.textContent = Math.round(total(t)*10)/10;
+}
+function setCommander(c,t,v){ commanders[c][t]=v; }
+function setName(n,t,v){ names[n][t]=v; }
+
+function handleLock(){
+  if(isEditor){
+    isEditor=false;
+    document.getElementById('edit-badge').style.display='none';
+    document.getElementById('lock-icon').className='ti ti-lock';
+    document.getElementById('lock-label').textContent='unlock to edit';
+    document.getElementById('dl-row').style.display='none';
+    render();
+  } else {
+    const m=document.getElementById('modal');
+    m.style.display='flex';
+    document.getElementById('pw-error').style.display='none';
+    document.getElementById('pw-input').value='';
+    setTimeout(()=>document.getElementById('pw-input').focus(),60);
   }
-
-  function downloadCSV(){
-    let c='Team Goals,Team 1,Team 2,Team 3,Team 4,Team 5,Team 6\n';
-    scoreRows.forEach(r=>{ c+=`"${r.label}",`+scores[r.key].join(',')+'\n'; });
-    c+='Total Score,'+Array.from({length:NT},(_,t)=>Math.round(total(t)*10)/10).join(',')+'\n';
-    c+='\nCrew Roster\nCommander 1,'+commanders[0].join(',')+'\nCommander 2,'+commanders[1].join(',')+'\n';
-    for(let n=0;n<NN;n++) c+=`Mate ${n+1},`+names[n].join(',')+'\n';
-    const a=document.createElement('a');
-    a.href=URL.createObjectURL(new Blob([c],{type:'text/csv'}));
-    a.download='redding_rotary_team_tracker.csv'; a.click();
+}
+function closeModal(){ document.getElementById('modal').style.display='none'; }
+function submitPw(){
+  if(document.getElementById('pw-input').value===PASS){
+    isEditor=true; closeModal();
+    document.getElementById('edit-badge').style.display='inline-flex';
+    document.getElementById('lock-icon').className='ti ti-lock-open';
+    document.getElementById('lock-label').textContent='lock editing';
+    document.getElementById('dl-row').style.display='flex';
+    render();
+  } else {
+    document.getElementById('pw-error').style.display='block';
+    document.getElementById('pw-input').value='';
+    document.getElementById('pw-input').focus();
   }
+}
 
-  (function makeStars(){
-    const c=document.getElementById('stars-container');
-    for(let i=0;i<50;i++){
-      const s=document.createElement('div');
-      s.className='star';
-      const sz=Math.random()*2.5+0.5;
-      s.style.cssText=`width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;opacity:${Math.random()*0.5+0.2};animation-delay:${Math.random()*4}s;animation-duration:${2+Math.random()*3}s`;
-      c.appendChild(s);
-    }
-  })();
+function downloadCSV(){
+  let c='Team Goals,Team 1,Team 2,Team 3,Team 4,Team 5,Team 6\n';
+  scoreRows.forEach(r=>{ c+=`"${r.label}",`+scores[r.key].join(',')+'\n'; });
+  c+='Total Score,'+Array.from({length:NT},(_,t)=>Math.round(total(t)*10)/10).join(',')+'\n';
+  c+='\nCrew Roster\nCommander 1,'+commanders[0].join(',')+'\nCommander 2,'+commanders[1].join(',')+'\n';
+  for(let n=0;n<NN;n++) c+=`Mate ${n+1},`+names[n].join(',')+'\n';
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([c],{type:'text/csv'}));
+  a.download='redding_rotary_team_tracker.csv'; a.click();
+}
 
-  render();
+(function makeStars(){
+  const sf = document.getElementById('starfield');
+  for(let i=0;i<80;i++){
+    const s = document.createElement('div');
+    s.className = 'star';
+    const sz = Math.random()*2.5+0.5;
+    s.style.cssText = `width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;animation-delay:${Math.random()*5}s;animation-duration:${2+Math.random()*4}s;opacity:${Math.random()*0.4+0.1}`;
+    sf.appendChild(s);
+  }
+})();
+
+render();
 </script>
-</body>
-</html>
