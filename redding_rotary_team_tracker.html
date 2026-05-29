@@ -7,15 +7,14 @@
     padding: 1.25rem;
     position: relative;
     overflow: hidden;
-    min-height: 600px;
   }
   .starfield { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
   .star { position: absolute; border-radius: 50%; background: #fff; animation: twinkle 3s infinite alternate; }
-  @keyframes twinkle { from { opacity: 0.15; } to { opacity: 0.9; } }
+  @keyframes twinkle { from { opacity: 0.1; } to { opacity: 0.85; } }
 
   .hero {
     position: relative; z-index: 1;
-    background: linear-gradient(135deg, rgba(10,14,42,0.92) 0%, rgba(17,26,62,0.92) 60%, rgba(26,10,10,0.92) 100%);
+    background: linear-gradient(135deg, rgba(10,14,42,0.93) 0%, rgba(17,26,62,0.93) 60%, rgba(26,10,10,0.93) 100%);
     border-radius: var(--border-radius-lg);
     padding: 1.1rem 1.25rem;
     margin-bottom: 1rem;
@@ -32,39 +31,31 @@
   .lock-btn { display: flex; align-items: center; gap: 6px; padding: 6px 14px; border: 0.5px solid rgba(255,255,255,0.15); border-radius: var(--border-radius-md); background: rgba(255,255,255,0.05); cursor: pointer; font-size: 13px; color: #8a9bb8; }
   .lock-btn:hover { background: rgba(255,255,255,0.1); color: #e6edf3; }
 
-  .split { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; }
-
-  .panel { background: rgba(10,14,34,0.82); border: 0.5px solid rgba(255,255,255,0.08); border-radius: var(--border-radius-lg); overflow: hidden; }
-  .panel-header { background: #0f1535; padding: 8px 12px; border-bottom: 0.5px solid rgba(138,155,184,0.15); }
+  .panel { position: relative; z-index: 1; background: rgba(10,14,34,0.85); border: 0.5px solid rgba(255,255,255,0.08); border-radius: var(--border-radius-lg); overflow: hidden; }
+  .panel-header { background: #0f1535; padding: 8px 14px; border-bottom: 0.5px solid rgba(138,155,184,0.15); }
   .panel-header p { font-size: 11px; font-weight: 500; color: #c9923a; text-transform: uppercase; letter-spacing: .1em; margin: 0; }
 
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th { font-size: 11px; font-weight: 500; color: #8a9bb8; padding: 8px 8px; text-align: center; border-bottom: 0.5px solid rgba(138,155,184,0.15); letter-spacing: .05em; white-space: nowrap; }
-  th.lth { text-align: left; color: #c9923a; padding-left: 12px; }
-  td { padding: 7px 8px; border-bottom: 0.5px solid rgba(255,255,255,0.05); text-align: center; color: #e6edf3; vertical-align: middle; font-size: 13px; }
-  td.ltd { text-align: left; color: #8a9bb8; padding-left: 12px; font-size: 12px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; table-layout: fixed; }
+  col.label-col { width: 185px; }
+  col.team-col { width: 72px; }
+  th { font-size: 12px; font-weight: 500; color: #8a9bb8; padding: 9px 8px; text-align: center; border-bottom: 0.5px solid rgba(138,155,184,0.15); letter-spacing: .05em; white-space: nowrap; }
+  th.lth { text-align: left; color: #c9923a; padding-left: 14px; }
+  td { padding: 9px 8px; border-bottom: 0.5px solid rgba(255,255,255,0.05); text-align: center; color: #e6edf3; vertical-align: middle; }
+  td.ltd { text-align: left; color: #8a9bb8; padding-left: 14px; font-size: 14px; }
   tr:last-child td { border-bottom: none; }
-  tr.tot td { font-weight: 500; background: rgba(186,117,23,0.1); color: #f0c060; border-top: 0.5px solid rgba(186,117,23,0.25); border-bottom: 0.5px solid rgba(186,117,23,0.25); }
-  tr.tot td.ltd { color: #f0c060; }
+
+  tr.tot-row td { font-weight: 500; background: rgba(186,117,23,0.1); color: #f0c060; border-top: 0.5px solid rgba(186,117,23,0.3); border-bottom: 0.5px solid rgba(186,117,23,0.3); font-size: 15px; }
+  tr.tot-row td.ltd { color: #f0c060; }
+
   tr.cmd-row td { background: rgba(186,117,23,0.07); border-bottom: 0.5px solid rgba(186,117,23,0.15); }
   tr.cmd-row td.ltd { color: #c9923a; font-weight: 500; }
-  tr.cmd-div td { border-bottom: 0.5px solid rgba(186,117,23,0.2); padding: 0; }
-  tr.mate-row td.ltd { color: #555d6b; font-size: 12px; }
-  tr.names-hdr td { font-size: 10px; color: #3a4252; padding-top: 12px; border-bottom: none; text-transform: uppercase; letter-spacing: .1em; }
+  tr.cmd-row:last-child td { border-bottom: none; }
 
-  input.score-input { width: 52px; padding: 4px 5px; text-align: center; border-radius: 6px; border: 0.5px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); color: #e6edf3; font-size: 12px; font-family: var(--font-sans); }
+  input.score-input { width: 56px; padding: 5px 6px; text-align: center; border-radius: 6px; border: 0.5px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); color: #e6edf3; font-size: 13px; font-family: var(--font-sans); }
   input.score-input:focus { outline: none; border-color: #c9923a; }
-  input.name-input { width: 100%; padding: 4px 6px; border-radius: 6px; border: 0.5px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); color: #e6edf3; font-size: 12px; font-family: var(--font-sans); }
-  input.name-input:focus { outline: none; border-color: #c9923a; }
-  input.cmd-input { width: 100%; padding: 4px 6px; border-radius: 6px; border: 0.5px solid rgba(186,117,23,0.35); background: rgba(186,117,23,0.07); color: #e6edf3; font-size: 12px; font-family: var(--font-sans); }
+  input.cmd-input { width: 68px; padding: 5px 6px; border-radius: 6px; border: 0.5px solid rgba(186,117,23,0.35); background: rgba(186,117,23,0.07); color: #e6edf3; font-size: 12px; font-family: var(--font-sans); }
   input.cmd-input:focus { outline: none; border-color: #c9923a; }
-
-  .name-val { font-size: 12px; color: #555d6b; }
-  .cmd-val { font-size: 12px; color: #a07830; }
-
-  .roster-table td { padding: 5px 8px; }
-  .roster-table td.ltd { padding-left: 12px; }
-  .team-badge { display: inline-block; font-size: 10px; font-weight: 500; padding: 1px 7px; border-radius: 10px; background: rgba(186,117,23,0.12); color: #c9923a; border: 0.5px solid rgba(186,117,23,0.25); white-space: nowrap; }
+  .cmd-val { font-size: 13px; color: #a07830; }
 
   .dl-row { position: relative; z-index: 1; display: flex; justify-content: flex-end; margin-top: 1rem; }
   .dl-btn { display: flex; align-items: center; gap: 5px; padding: 6px 14px; border: 0.5px solid rgba(255,255,255,0.15); border-radius: var(--border-radius-md); background: rgba(255,255,255,0.05); cursor: pointer; font-size: 12px; color: #8a9bb8; }
@@ -82,7 +73,7 @@
   .error-msg { font-size: 12px; color: #f97583; margin: 0 0 8px; }
 </style>
 
-<div class="wrap" id="app">
+<div class="wrap">
   <div class="starfield" id="starfield"></div>
 
   <div class="hero">
@@ -112,32 +103,23 @@
     </div>
   </div>
 
-  <div class="split">
-    <div class="panel" id="scores-panel">
-      <div class="panel-header"><p><i class="ti ti-trophy" style="font-size:12px;margin-right:5px" aria-hidden="true"></i>Scores</p></div>
-      <table id="scores-table">
-        <thead>
-          <tr>
-            <th class="lth">Goal</th>
-            <th>T1</th><th>T2</th><th>T3</th><th>T4</th><th>T5</th><th>T6</th>
-          </tr>
-        </thead>
-        <tbody id="scores-body"></tbody>
-      </table>
-    </div>
-
-    <div class="panel" id="roster-panel">
-      <div class="panel-header"><p><i class="ti ti-users" style="font-size:12px;margin-right:5px" aria-hidden="true"></i>⚔️ Crew Roster</p></div>
-      <table class="roster-table">
-        <thead>
-          <tr>
-            <th class="lth">Role</th>
-            <th>T1</th><th>T2</th><th>T3</th><th>T4</th><th>T5</th><th>T6</th>
-          </tr>
-        </thead>
-        <tbody id="roster-body"></tbody>
-      </table>
-    </div>
+  <div class="panel">
+    <div class="panel-header"><p><i class="ti ti-trophy" style="font-size:12px;margin-right:5px" aria-hidden="true"></i>Team Scores</p></div>
+    <table>
+      <colgroup>
+        <col class="label-col">
+        <col class="team-col"><col class="team-col"><col class="team-col">
+        <col class="team-col"><col class="team-col"><col class="team-col">
+      </colgroup>
+      <thead>
+        <tr>
+          <th class="lth">Team Goals</th>
+          <th>Team 1</th><th>Team 2</th><th>Team 3</th>
+          <th>Team 4</th><th>Team 5</th><th>Team 6</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
   </div>
 
   <div class="dl-row" id="dl-row" style="display:none;">
@@ -147,34 +129,33 @@
 
 <script>
 const PASS = 'rotary2026';
-const NT = 6, NN = 18;
+const NT = 6;
 let isEditor = false;
 
 const scoreRows = [
-  { key:'social1',    label:'First Social' },
-  { key:'social2',    label:'Social w/Team' },
-  { key:'extra',      label:"Extra Social" },
-  { key:'recruit1',   label:'Recruit #1' },
-  { key:'recruit2',   label:'Recruit #2' },
-  { key:'addl',       label:"Add'l Recruits" },
-  { key:'fundraiser', label:'Fundraiser' },
-  { key:'attendance', label:'Attendance %' },
-  { key:'spirit',     label:'Spirit %' },
-  { key:'committees', label:'Committees %' },
+  { key:'social1',    label:'First Team Social' },
+  { key:'social2',    label:'Team Social w/another Team' },
+  { key:'extra',      label:"Extra Points for add'l social" },
+  { key:'recruit1',   label:'Recruit Teammate' },
+  { key:'recruit2',   label:'Recruit Teammate' },
+  { key:'addl',       label:"Add'l Teammates Recruited" },
+  { key:'fundraiser', label:'Fundraiser for Committee' },
+  { key:'attendance', label:'Team Attendance %' },
+  { key:'spirit',     label:'Team Spirit %' },
+  { key:'committees', label:'% of Team on committees' },
 ];
 
 let scores = {};
 let commanders = [Array(NT).fill(''), Array(NT).fill('')];
-let names = {};
 scoreRows.forEach(r => scores[r.key] = Array(NT).fill(0));
-for(let n=0;n<NN;n++) names[n] = Array(NT).fill('');
 
 function total(t){ return scoreRows.reduce((s,r)=>s+(parseFloat(scores[r.key][t])||0),0); }
 function fmt(v){ return v%1===0?v:parseFloat(v).toFixed(1); }
 
-function renderScores(){
-  const tb = document.getElementById('scores-body');
+function render(){
+  const tb = document.getElementById('tbody');
   tb.innerHTML = '';
+
   scoreRows.forEach(r=>{
     const tr = document.createElement('tr');
     let h = `<td class="ltd">${r.label}</td>`;
@@ -186,20 +167,17 @@ function renderScores(){
     }
     tr.innerHTML = h; tb.appendChild(tr);
   });
+
   const tot = document.createElement('tr');
-  tot.className = 'tot';
-  let th = `<td class="ltd">Total</td>`;
+  tot.className = 'tot-row';
+  let th = `<td class="ltd">Total Score</td>`;
   for(let t=0;t<NT;t++) th += `<td id="tot-${t}">${Math.round(total(t)*10)/10}</td>`;
   tot.innerHTML = th; tb.appendChild(tot);
-}
 
-function renderRoster(){
-  const tb = document.getElementById('roster-body');
-  tb.innerHTML = '';
   for(let c=0;c<2;c++){
     const cr = document.createElement('tr');
     cr.className = 'cmd-row';
-    let ch = `<td class="ltd"><i class="ti ti-crown" style="font-size:11px;margin-right:4px;color:#c9923a" aria-hidden="true"></i>Cmdr ${c+1}</td>`;
+    let ch = `<td class="ltd"><i class="ti ti-crown" style="font-size:12px;margin-right:5px;color:#c9923a" aria-hidden="true"></i>Commander ${c+1}</td>`;
     for(let t=0;t<NT;t++){
       const nm = commanders[c][t];
       ch += isEditor
@@ -208,25 +186,7 @@ function renderRoster(){
     }
     cr.innerHTML = ch; tb.appendChild(cr);
   }
-  const div = document.createElement('tr');
-  div.className = 'cmd-div';
-  div.innerHTML = `<td colspan="7"></td>`;
-  tb.appendChild(div);
-  for(let n=0;n<NN;n++){
-    const nr = document.createElement('tr');
-    nr.className = 'mate-row';
-    let nh = `<td class="ltd">Mate ${n+1}</td>`;
-    for(let t=0;t<NT;t++){
-      const nm = names[n][t];
-      nh += isEditor
-        ? `<td><input class="name-input" type="text" placeholder="Name" value="${nm}" onchange="setName(${n},${t},this.value)"/></td>`
-        : `<td><span class="name-val">${nm||'—'}</span></td>`;
-    }
-    nr.innerHTML = nh; tb.appendChild(nr);
-  }
 }
-
-function render(){ renderScores(); renderRoster(); }
 
 function setScore(key,t,v){
   scores[key][t] = parseFloat(v)||0;
@@ -234,7 +194,6 @@ function setScore(key,t,v){
   if(el) el.textContent = Math.round(total(t)*10)/10;
 }
 function setCommander(c,t,v){ commanders[c][t]=v; }
-function setName(n,t,v){ names[n][t]=v; }
 
 function handleLock(){
   if(isEditor){
@@ -272,20 +231,19 @@ function downloadCSV(){
   let c='Team Goals,Team 1,Team 2,Team 3,Team 4,Team 5,Team 6\n';
   scoreRows.forEach(r=>{ c+=`"${r.label}",`+scores[r.key].join(',')+'\n'; });
   c+='Total Score,'+Array.from({length:NT},(_,t)=>Math.round(total(t)*10)/10).join(',')+'\n';
-  c+='\nCrew Roster\nCommander 1,'+commanders[0].join(',')+'\nCommander 2,'+commanders[1].join(',')+'\n';
-  for(let n=0;n<NN;n++) c+=`Mate ${n+1},`+names[n].join(',')+'\n';
+  c+='Commander 1,'+commanders[0].join(',')+'\nCommander 2,'+commanders[1].join(',')+'\n';
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([c],{type:'text/csv'}));
   a.download='redding_rotary_team_tracker.csv'; a.click();
 }
 
 (function makeStars(){
-  const sf = document.getElementById('starfield');
-  for(let i=0;i<80;i++){
-    const s = document.createElement('div');
-    s.className = 'star';
-    const sz = Math.random()*2.5+0.5;
-    s.style.cssText = `width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;animation-delay:${Math.random()*5}s;animation-duration:${2+Math.random()*4}s;opacity:${Math.random()*0.4+0.1}`;
+  const sf=document.getElementById('starfield');
+  for(let i=0;i<90;i++){
+    const s=document.createElement('div');
+    s.className='star';
+    const sz=Math.random()*2.5+0.5;
+    s.style.cssText=`width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;animation-delay:${Math.random()*5}s;animation-duration:${2+Math.random()*4}s;opacity:${Math.random()*0.4+0.1}`;
     sf.appendChild(s);
   }
 })();
