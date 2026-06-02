@@ -184,56 +184,54 @@
     }
   }
 
-  // Load using JSONP to avoid CORS issues
-  function loadFromSheets() {
-    if (!scriptUrl) return;
-    setSyncBadge('syncing', 'loading...');
+  // JSONP helper
+  function jsonp(url, callback) {
     var cbName = 'rotaryCb_' + Date.now();
     var timeout = setTimeout(function() {
-      setSyncBadge('error', 'sync failed — check URL');
+      setSyncBadge('error', 'timeout — check URL');
       if (window[cbName]) delete window[cbName];
     }, 10000);
-
     window[cbName] = function(data) {
       clearTimeout(timeout);
       delete window[cbName];
       var old = document.getElementById('jsonp-script');
       if (old) old.parentNode.removeChild(old);
+      callback(data);
+    };
+    var script = document.createElement('script');
+    script.id = 'jsonp-script';
+    script.src = url + '&callback=' + cbName;
+    script.onerror = function() {
+      clearTimeout(timeout);
+      setSyncBadge('error', 'failed — check URL');
+    };
+    document.head.appendChild(script);
+  }
+
+  function loadFromSheets() {
+    if (!scriptUrl) return;
+    setSyncBadge('syncing', 'loading...');
+    jsonp(scriptUrl + '?action=get', function(data) {
       if (data.scores) scores = data.scores;
       if (data.commanders) commanders = data.commanders;
       render();
       var t = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
       setSyncBadge('saved', 'synced ' + t);
-    };
-
-    var script = document.createElement('script');
-    script.id = 'jsonp-script';
-    script.src = scriptUrl + '?action=get&callback=' + cbName;
-    script.onerror = function() {
-      clearTimeout(timeout);
-      setSyncBadge('error', 'sync failed — check URL');
-    };
-    document.head.appendChild(script);
+    });
   }
 
-  // Save using no-cors POST (fire and forget)
   function saveToSheets() {
     if (!scriptUrl) return;
     if (saveTimer) clearTimeout(saveTimer);
     saveTimer = setTimeout(function() {
       setSyncBadge('syncing', 'saving...');
-      fetch(scriptUrl, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({ scores: scores, commanders: commanders })
-      }).then(function() {
+      var payload = JSON.stringify({ scores: scores, commanders: commanders });
+      var encoded = encodeURIComponent(payload);
+      jsonp(scriptUrl + '?action=save&data=' + encoded, function(data) {
         var t = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
         setSyncBadge('saved', 'saved ' + t);
-      }).catch(function() {
-        setSyncBadge('error', 'save failed');
       });
-    }, 800);
+    }, 1000);
   }
 
   function startAutoRefresh() {
@@ -348,44 +346,4 @@
       return;
     }
     scriptUrl = val;
-    localStorage.setItem('rotary_script_url', scriptUrl);
-    closeUrlModal();
-    updateConnectBtn();
-    loadFromSheets();
-    startAutoRefresh();
-  }
-
-  function downloadCSV() {
-    var c = 'Team Goals,Team 1,Team 2,Team 3,Team 4,Team 5,Team 6\n';
-    scoreRows.forEach(function(r) { c += '"' + r.label + '",' + scores[r.key].join(',') + '\n'; });
-    c += 'Total Score,' + Array.from({length:NT}, function(_,t){ return Math.round(total(t)*10)/10; }).join(',') + '\n';
-    c += 'Commander 1,' + commanders[0].join(',') + '\nCommander 2,' + commanders[1].join(',') + '\n';
-    var a = document.createElement('a');
-    a.href = URL.createObjectURL(new Blob([c], {type:'text/csv'}));
-    a.download = 'redding_rotary_team_tracker.csv';
-    a.click();
-  }
-
-  (function makeStars() {
-    var sf = document.getElementById('starfield');
-    for (var i = 0; i < 150; i++) {
-      var s = document.createElement('div');
-      s.className = 'star';
-      var sz = Math.random() * 2.8 + 0.4;
-      var css = 'width:' + sz + 'px;height:' + sz + 'px;';
-      css += 'top:' + (Math.random() * 100) + '%;';
-      css += 'left:' + (Math.random() * 100) + '%;';
-      css += 'animation-delay:' + (Math.random() * 6) + 's;';
-      css += 'animation-duration:' + (2 + Math.random() * 4) + 's;';
-      css += 'opacity:' + (Math.random() * 0.5 + 0.1) + ';';
-      s.style.cssText = css;
-      sf.appendChild(s);
-    }
-  })();
-
-  if (scriptUrl) { loadFromSheets(); startAutoRefresh(); }
-  else { setSyncBadge('setup', 'not connected'); }
-  render();
-</script>
-</body>
-</html>
+    localStorage.setItem('rotary_script_
