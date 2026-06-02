@@ -346,4 +346,44 @@
       return;
     }
     scriptUrl = val;
-    localStorage.setItem('rotary_script_
+    localStorage.setItem('rotary_script_url', scriptUrl);
+    closeUrlModal();
+    updateConnectBtn();
+    loadFromSheets();
+    startAutoRefresh();
+  }
+
+  function downloadCSV() {
+    var c = 'Team Goals,Team 1,Team 2,Team 3,Team 4,Team 5,Team 6\n';
+    scoreRows.forEach(function(r) { c += '"' + r.label + '",' + scores[r.key].join(',') + '\n'; });
+    c += 'Total Score,' + Array.from({length:NT}, function(_,t){ return Math.round(total(t)*10)/10; }).join(',') + '\n';
+    c += 'Commander 1,' + commanders[0].join(',') + '\nCommander 2,' + commanders[1].join(',') + '\n';
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([c], {type:'text/csv'}));
+    a.download = 'redding_rotary_team_tracker.csv';
+    a.click();
+  }
+
+  (function makeStars() {
+    var sf = document.getElementById('starfield');
+    for (var i = 0; i < 150; i++) {
+      var s = document.createElement('div');
+      s.className = 'star';
+      var sz = Math.random() * 2.8 + 0.4;
+      var css = 'width:' + sz + 'px;height:' + sz + 'px;';
+      css += 'top:' + (Math.random() * 100) + '%;';
+      css += 'left:' + (Math.random() * 100) + '%;';
+      css += 'animation-delay:' + (Math.random() * 6) + 's;';
+      css += 'animation-duration:' + (2 + Math.random() * 4) + 's;';
+      css += 'opacity:' + (Math.random() * 0.5 + 0.1) + ';';
+      s.style.cssText = css;
+      sf.appendChild(s);
+    }
+  })();
+
+  if (scriptUrl) { loadFromSheets(); startAutoRefresh(); }
+  else { setSyncBadge('setup', 'not connected'); }
+  render();
+</script>
+</body>
+</html>
