@@ -25,8 +25,6 @@
     .sync-badge.syncing { color: #facc15; background: rgba(250,204,21,0.1); border-color: rgba(250,204,21,0.25); }
     .sync-badge.error { color: #f87171; background: rgba(248,113,113,0.1); border-color: rgba(248,113,113,0.25); }
     .sync-badge.setup { color: #94a3b8; background: rgba(148,163,184,0.1); border-color: rgba(148,163,184,0.2); }
-    .connect-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; padding: 5px 12px; border-radius: 8px; background: rgba(99,102,241,0.12); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.3); cursor: pointer; }
-    .connect-btn:hover { background: rgba(99,102,241,0.22); }
     .lock-btn { display: flex; align-items: center; gap: 8px; padding: 8px 18px; border: 1px solid rgba(255,255,255,0.18); border-radius: 8px; background: rgba(255,255,255,0.06); cursor: pointer; font-size: 15px; color: #8a9bb8; transition: background 0.15s; }
     .lock-btn:hover { background: rgba(255,255,255,0.12); color: #e6edf3; }
     .panel { position: relative; z-index: 1; background: rgba(10,14,34,0.88); border: 1px solid rgba(255,255,255,0.09); border-radius: 14px; overflow: hidden; width: 100%; }
@@ -53,15 +51,13 @@
     .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 100; align-items: center; justify-content: center; }
     .modal-box { background: #161b22; border: 1px solid rgba(186,117,23,0.3); border-radius: 14px; padding: 2rem; width: 360px; }
     .modal-title { font-size: 17px; font-weight: 600; margin-bottom: 14px; color: #f5e6c8; }
-    .modal-box input[type=password], .modal-box input[type=text] { width: 100%; padding: 10px 12px; margin-bottom: 12px; background: #0d1117; border: 1px solid rgba(255,255,255,0.18); border-radius: 8px; color: #e6edf3; font-size: 14px; }
+    .modal-box input[type=password] { width: 100%; padding: 10px 12px; margin-bottom: 12px; background: #0d1117; border: 1px solid rgba(255,255,255,0.18); border-radius: 8px; color: #e6edf3; font-size: 14px; }
     .modal-box input:focus { outline: none; border-color: #c9923a; }
     .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
     .btn-primary { padding: 8px 20px; border-radius: 8px; border: 1px solid #c9923a; background: rgba(186,117,23,0.15); cursor: pointer; font-size: 14px; color: #f0c060; font-weight: 600; }
     .btn-primary:hover { background: rgba(186,117,23,0.28); }
     .btn-cancel { padding: 8px 16px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: transparent; cursor: pointer; font-size: 14px; color: #8a9bb8; }
     .error-msg { font-size: 13px; color: #f97583; margin-bottom: 10px; }
-    .modal-hint { font-size: 12px; color: #8a9bb8; margin-bottom: 12px; line-height: 1.6; }
-    .current-url { font-size: 11px; color: #555d6b; margin-bottom: 10px; word-break: break-all; }
     .dl-row { position: relative; z-index: 1; display: flex; justify-content: flex-end; margin-top: 1rem; }
     .dl-btn { display: flex; align-items: center; gap: 7px; padding: 8px 18px; border: 1px solid rgba(255,255,255,0.18); border-radius: 8px; background: rgba(255,255,255,0.06); cursor: pointer; font-size: 14px; color: #8a9bb8; }
     .dl-btn:hover { background: rgba(255,255,255,0.12); color: #e6edf3; }
@@ -82,7 +78,7 @@
   <div class="controls-row">
     <div class="controls-left">
       <span id="edit-badge" class="edit-badge" style="display:none;">&#9999; editing mode</span>
-      <span id="sync-badge" class="sync-badge setup">&#9679; loading...</span>
+      <span id="sync-badge" class="sync-badge syncing">&#8635; loading...</span>
     </div>
     <button class="lock-btn" onclick="handleLock()">
       <span id="lock-icon">&#128274;</span>
@@ -123,9 +119,10 @@
   var PASS = 'rotary2026';
   var NT = 6;
   var isEditor = false;
-  var scriptUrl = 'https://script.google.com/macros/s/AKfycbzDZwYeXnMPwmEzuJbsI_89oXk5oEo2FTkx6sgp1VQi7xL_3FfhempyOho6Uk3eUz0P/exec';
+  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwfzm906OsernYRL2qgcp3Y-AswQU4V9A4BJB4SIewf__qA3Q7F58_LX_TJtfQVWq7b/exec';
   var autoRefreshTimer = null;
   var saveTimer = null;
+  var jsonpCounter = 0;
 
   var scoreRows = [
     { key:'social1',    label:'First Team Social' },
@@ -161,33 +158,43 @@
   }
 
   function jsonp(url, callback) {
-    var cbName = 'rotaryCb_' + Date.now();
+    jsonpCounter++;
+    var cbName = 'rotaryCb' + jsonpCounter;
+    var scriptId = 'jsonp_' + jsonpCounter;
+
     var timeout = setTimeout(function() {
-      setSyncBadge('error', 'timeout — check script');
-      if (window[cbName]) delete window[cbName];
+      setSyncBadge('error', 'timeout — retrying...');
+      cleanup();
     }, 10000);
+
+    function cleanup() {
+      if (window[cbName]) delete window[cbName];
+      var el = document.getElementById(scriptId);
+      if (el) el.parentNode.removeChild(el);
+    }
+
     window[cbName] = function(data) {
       clearTimeout(timeout);
-      delete window[cbName];
-      var old = document.getElementById('jsonp-script');
-      if (old) old.parentNode.removeChild(old);
+      cleanup();
       if (callback) callback(data);
     };
+
     var script = document.createElement('script');
-    script.id = 'jsonp-script';
-    script.src = url + '&callback=' + cbName;
+    script.id = scriptId;
+    script.src = url + (url.indexOf('?') > -1 ? '&' : '?') + 'callback=' + cbName;
     script.onerror = function() {
       clearTimeout(timeout);
-      setSyncBadge('error', 'failed — check script URL');
+      cleanup();
+      setSyncBadge('error', 'failed — check script');
     };
     document.head.appendChild(script);
   }
 
   function loadFromSheets() {
     setSyncBadge('syncing', 'loading...');
-    jsonp(scriptUrl + '?action=get', function(data) {
-      if (data.scores) scores = data.scores;
-      if (data.commanders) commanders = data.commanders;
+    jsonp(SCRIPT_URL + '?action=get', function(data) {
+      if (data && data.scores) scores = data.scores;
+      if (data && data.commanders) commanders = data.commanders;
       render();
       var t = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
       setSyncBadge('saved', 'synced ' + t);
@@ -200,7 +207,7 @@
       setSyncBadge('syncing', 'saving...');
       var payload = JSON.stringify({ scores: scores, commanders: commanders });
       var encoded = encodeURIComponent(payload);
-      jsonp(scriptUrl + '?action=save&data=' + encoded, function(data) {
+      jsonp(SCRIPT_URL + '?action=save&data=' + encoded, function(data) {
         var t = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
         setSyncBadge('saved', 'saved ' + t);
       });
@@ -209,7 +216,9 @@
 
   function startAutoRefresh() {
     if (autoRefreshTimer) clearInterval(autoRefreshTimer);
-    autoRefreshTimer = setInterval(function() { if (!isEditor) loadFromSheets(); }, 30000);
+    autoRefreshTimer = setInterval(function() {
+      if (!isEditor) loadFromSheets();
+    }, 30000);
   }
 
   function render() {
@@ -279,6 +288,7 @@
   }
 
   function closeModal() { document.getElementById('modal').style.display = 'none'; }
+
   function submitPw() {
     if (document.getElementById('pw-input').value === PASS) {
       isEditor = true;
