@@ -82,8 +82,7 @@
   <div class="controls-row">
     <div class="controls-left">
       <span id="edit-badge" class="edit-badge" style="display:none;">&#9999; editing mode</span>
-      <span id="sync-badge" class="sync-badge setup">&#9679; not connected</span>
-      <button id="connect-btn" class="connect-btn" onclick="openUrlModal()" style="display:none;">&#128279; connect Google Sheets</button>
+      <span id="sync-badge" class="sync-badge setup">&#9679; loading...</span>
     </div>
     <button class="lock-btn" onclick="handleLock()">
       <span id="lock-icon">&#128274;</span>
@@ -98,19 +97,6 @@
       <div class="modal-actions">
         <button class="btn-cancel" onclick="closeModal()">Cancel</button>
         <button class="btn-primary" onclick="submitPw()">Unlock</button>
-      </div>
-    </div>
-  </div>
-  <div class="modal-overlay" id="url-modal">
-    <div class="modal-box">
-      <p class="modal-title">&#128279; Connect Google Sheets</p>
-      <p class="modal-hint">Paste your Google Apps Script Web App URL below.</p>
-      <p class="error-msg" id="url-error" style="display:none;">Please enter a valid https:// URL.</p>
-      <div id="current-url-wrap" class="current-url" style="display:none;"></div>
-      <input type="text" id="url-input" placeholder="https://script.google.com/macros/s/..." />
-      <div class="modal-actions">
-        <button class="btn-cancel" onclick="closeUrlModal()">Cancel</button>
-        <button class="btn-primary" onclick="saveScriptUrl()">Connect</button>
       </div>
     </div>
   </div>
@@ -137,7 +123,7 @@
   var PASS = 'rotary2026';
   var NT = 6;
   var isEditor = false;
-  var scriptUrl = localStorage.getItem('rotary_script_url') || '';
+  var scriptUrl = 'https://script.google.com/macros/s/AKfycbzDZwYeXnMPwmEzuJbsI_89oXk5oEo2FTkx6sgp1VQi7xL_3FfhempyOho6Uk3eUz0P/exec';
   var autoRefreshTimer = null;
   var saveTimer = null;
 
@@ -174,21 +160,10 @@
     b.innerHTML = (icons[state] || '&#9679;') + ' ' + msg;
   }
 
-  function updateConnectBtn() {
-    var btn = document.getElementById('connect-btn');
-    if (isEditor) {
-      btn.style.display = 'inline-flex';
-      btn.innerHTML = scriptUrl ? '&#128279; reconnect Sheets' : '&#128279; connect Google Sheets';
-    } else {
-      btn.style.display = 'none';
-    }
-  }
-
-  // JSONP helper
   function jsonp(url, callback) {
     var cbName = 'rotaryCb_' + Date.now();
     var timeout = setTimeout(function() {
-      setSyncBadge('error', 'timeout — check URL');
+      setSyncBadge('error', 'timeout — check script');
       if (window[cbName]) delete window[cbName];
     }, 10000);
     window[cbName] = function(data) {
@@ -196,20 +171,19 @@
       delete window[cbName];
       var old = document.getElementById('jsonp-script');
       if (old) old.parentNode.removeChild(old);
-      callback(data);
+      if (callback) callback(data);
     };
     var script = document.createElement('script');
     script.id = 'jsonp-script';
     script.src = url + '&callback=' + cbName;
     script.onerror = function() {
       clearTimeout(timeout);
-      setSyncBadge('error', 'failed — check URL');
+      setSyncBadge('error', 'failed — check script URL');
     };
     document.head.appendChild(script);
   }
 
   function loadFromSheets() {
-    if (!scriptUrl) return;
     setSyncBadge('syncing', 'loading...');
     jsonp(scriptUrl + '?action=get', function(data) {
       if (data.scores) scores = data.scores;
@@ -221,7 +195,6 @@
   }
 
   function saveToSheets() {
-    if (!scriptUrl) return;
     if (saveTimer) clearTimeout(saveTimer);
     saveTimer = setTimeout(function() {
       setSyncBadge('syncing', 'saving...');
@@ -296,7 +269,6 @@
       document.getElementById('lock-icon').innerHTML = '&#128274;';
       document.getElementById('lock-label').textContent = 'unlock to edit';
       document.getElementById('dl-row').style.display = 'none';
-      updateConnectBtn();
       render();
     } else {
       document.getElementById('pw-error').style.display = 'none';
@@ -315,42 +287,12 @@
       document.getElementById('lock-icon').innerHTML = '&#128275;';
       document.getElementById('lock-label').textContent = 'lock editing';
       document.getElementById('dl-row').style.display = 'flex';
-      updateConnectBtn();
       render();
     } else {
       document.getElementById('pw-error').style.display = 'block';
       document.getElementById('pw-input').value = '';
       document.getElementById('pw-input').focus();
     }
-  }
-
-  function openUrlModal() {
-    document.getElementById('url-error').style.display = 'none';
-    document.getElementById('url-input').value = scriptUrl || '';
-    var wrap = document.getElementById('current-url-wrap');
-    if (scriptUrl) {
-      wrap.style.display = 'block';
-      wrap.textContent = 'Current: ' + scriptUrl.substring(0, 60) + '...';
-    } else {
-      wrap.style.display = 'none';
-    }
-    document.getElementById('url-modal').style.display = 'flex';
-    setTimeout(function() { document.getElementById('url-input').focus(); }, 80);
-  }
-
-  function closeUrlModal() { document.getElementById('url-modal').style.display = 'none'; }
-  function saveScriptUrl() {
-    var val = document.getElementById('url-input').value.trim();
-    if (!val.startsWith('https://')) {
-      document.getElementById('url-error').style.display = 'block';
-      return;
-    }
-    scriptUrl = val;
-    localStorage.setItem('rotary_script_url', scriptUrl);
-    closeUrlModal();
-    updateConnectBtn();
-    loadFromSheets();
-    startAutoRefresh();
   }
 
   function downloadCSV() {
@@ -381,9 +323,8 @@
     }
   })();
 
-  if (scriptUrl) { loadFromSheets(); startAutoRefresh(); }
-  else { setSyncBadge('setup', 'not connected'); }
-  render();
+  loadFromSheets();
+  startAutoRefresh();
 </script>
 </body>
 </html>
